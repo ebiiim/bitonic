@@ -10,21 +10,21 @@ type SortOrder bool
 
 const (
 	// Ascending represents ascending order.
-	Ascending = true
+	Ascending SortOrder = true
 	// Descending represents descending order.
-	Descending = false
+	Descending SortOrder = false
 )
-
-// SortInts1 sorts `x` by `ord` order (non-concurrent).
-// `len(x)` must be a power of 2.
-func SortInts1(x []int, ord SortOrder) {
-	bitonicSort1(x, ord, len(x))
-}
 
 // SortInts sorts `x` by `ord` order (concurrent).
 // `len(x)` must be a power of 2.
 func SortInts(x []int, ord SortOrder) {
 	bitonicSort(x, ord, len(x))
+}
+
+// SortInts1 sorts `x` by `ord` order (non-concurrent).
+// `len(x)` must be a power of 2.
+func SortInts1(x []int, ord SortOrder) {
+	bitonicSort1(x, ord, len(x))
 }
 
 // Threshold is used to decide whether to run concurrently.

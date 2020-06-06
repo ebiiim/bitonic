@@ -2,7 +2,6 @@
 
 [![GoDoc](https://godoc.org/github.com/ebiiim/bitonic?status.svg)](https://godoc.org/github.com/ebiiim/bitonic)
 [![Build Status](https://travis-ci.org/ebiiim/bitonic.svg?branch=master)](https://travis-ci.org/ebiiim/bitonic)
-[![Coverage Status](https://coveralls.io/repos/github/ebiiim/bitonic/badge.svg?branch=master)](https://coveralls.io/github/ebiiim/bitonic?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/ebiiim/bitonic)](https://goreportcard.com/report/github.com/ebiiim/bitonic)
 
 ```go

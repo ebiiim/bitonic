@@ -11,15 +11,20 @@ import (
 	"github.com/ebiiim/bitonic"
 )
 
-func makeInts(ln int, ord bitonic.SortOrder) (ints, sortedInts []int) {
+func makeInts(ln int) (ints []int) {
 	rand.Seed(12345)
 	ints = make([]int, ln)
-	sortedInts = make([]int, ln)
 	for i := 0; i < ln; i++ {
 		v := int(rand.Int31())
 		ints[i] = v
-		sortedInts[i] = v
 	}
+	return
+}
+
+func makeIntsWithSorted(ln int, ord bitonic.SortOrder) (ints, sortedInts []int) {
+	ints = makeInts(ln)
+	sortedInts = make([]int, ln)
+	_ = copy(sortedInts, ints)
 	if ord {
 		sort.Ints(sortedInts)
 	} else {
@@ -30,8 +35,8 @@ func makeInts(ln int, ord bitonic.SortOrder) (ints, sortedInts []int) {
 
 func TestSortInt(t *testing.T) {
 	var (
-		a1, a2 = makeInts(bitonic.Threshold<<1, bitonic.Ascending)
-		d1, d2 = makeInts(bitonic.Threshold<<1, bitonic.Descending)
+		a1, a2 = makeIntsWithSorted(bitonic.Threshold<<1, bitonic.Ascending)
+		d1, d2 = makeIntsWithSorted(bitonic.Threshold<<1, bitonic.Descending)
 	)
 	cases := []struct {
 		name string
@@ -59,8 +64,8 @@ func TestSortInt(t *testing.T) {
 
 func TestSortInt1(t *testing.T) {
 	var (
-		a1, a2 = makeInts(bitonic.Threshold<<1, bitonic.Ascending)
-		d1, d2 = makeInts(bitonic.Threshold<<1, bitonic.Descending)
+		a1, a2 = makeIntsWithSorted(bitonic.Threshold<<1, bitonic.Ascending)
+		d1, d2 = makeIntsWithSorted(bitonic.Threshold<<1, bitonic.Descending)
 	)
 	cases := []struct {
 		name string
@@ -95,7 +100,7 @@ var benchSize = func() int {
 
 func BenchmarkSortInt(b *testing.B) {
 	b.Logf("bitonic.SortInts %d integers", 1<<benchSize)
-	x, _ := makeInts(1<<benchSize, bitonic.Ascending)
+	x := makeInts(1<<benchSize)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		bitonic.SortInts(x, bitonic.Ascending)
@@ -104,7 +109,7 @@ func BenchmarkSortInt(b *testing.B) {
 
 func BenchmarkSortInt1(b *testing.B) {
 	b.Logf("bitonic.SortInts1 %d integers", 1<<benchSize)
-	x, _ := makeInts(1<<benchSize, bitonic.Ascending)
+	x := makeInts(1<<benchSize)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		bitonic.SortInts1(x, bitonic.Ascending)
@@ -113,7 +118,7 @@ func BenchmarkSortInt1(b *testing.B) {
 
 func BenchmarkGoSort(b *testing.B) {
 	b.Logf("sort.Sort %d integers", 1<<benchSize)
-	x, _ := makeInts(1<<benchSize, bitonic.Ascending)
+	x := makeInts(1<<benchSize)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		sort.Ints(x)

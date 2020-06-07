@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"os"
 	"reflect"
+	"runtime"
 	sort "sort"
 	"strconv"
 	"testing"
@@ -93,14 +94,19 @@ func TestSortInt1(t *testing.T) {
 
 var benchSize = func() int {
 	if b, err := strconv.Atoi(os.Getenv("BITS")); err == nil {
-		return b
+		return 1 << b
 	}
-	return 26 // default value
+	return 1 << 26 // default value
 }()
 
 func BenchmarkSortInt(b *testing.B) {
-	b.Logf("bitonic.SortInts %d integers", 1<<benchSize)
-	x := makeInts(1<<benchSize)
+	b.Logf("bitonic.SortInts %d integers", benchSize)
+	x := makeInts(benchSize)
+	b.Logf("int_bytes * num_ints = %d", int(reflect.TypeOf(0).Size())*benchSize)
+	var mem runtime.MemStats
+	runtime.ReadMemStats(&mem)
+	b.Logf("Alloc: %d, TotalAlloc: %d", mem.Alloc, mem.TotalAlloc)
+
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		bitonic.SortInts(x, bitonic.Ascending)
@@ -108,8 +114,13 @@ func BenchmarkSortInt(b *testing.B) {
 }
 
 func BenchmarkSortInt1(b *testing.B) {
-	b.Logf("bitonic.SortInts1 %d integers", 1<<benchSize)
-	x := makeInts(1<<benchSize)
+	b.Logf("bitonic.SortInts1 %d integers", benchSize)
+	x := makeInts(benchSize)
+	b.Logf("int_bytes * num_ints = %d", int(reflect.TypeOf(0).Size())*benchSize)
+	var mem runtime.MemStats
+	runtime.ReadMemStats(&mem)
+	b.Logf("Alloc: %d, TotalAlloc: %d", mem.Alloc, mem.TotalAlloc)
+
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		bitonic.SortInts1(x, bitonic.Ascending)
@@ -117,8 +128,13 @@ func BenchmarkSortInt1(b *testing.B) {
 }
 
 func BenchmarkGoSort(b *testing.B) {
-	b.Logf("sort.Sort %d integers", 1<<benchSize)
-	x := makeInts(1<<benchSize)
+	b.Logf("sort.Sort %d integers", benchSize)
+	x := makeInts(benchSize)
+	b.Logf("int_bytes * num_ints = %d", int(reflect.TypeOf(0).Size())*benchSize)
+	var mem runtime.MemStats
+	runtime.ReadMemStats(&mem)
+	b.Logf("Alloc: %d, TotalAlloc: %d", mem.Alloc, mem.TotalAlloc)
+
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		sort.Ints(x)
